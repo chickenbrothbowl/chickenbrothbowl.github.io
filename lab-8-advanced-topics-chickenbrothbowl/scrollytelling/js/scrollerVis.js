@@ -5,11 +5,11 @@ class ScrollerVis {
       parentElement: _config.parentElement,
       containerWidth: 400,
       containerHeight: 600,
-      cellWidth: 18,
-      cellHeight: 18,
+      cellWidth: 50,
+      cellHeight: 50,
       cellSpacing: 12,
       yAxisWidth: 150,
-      barHeight: 18,
+      barHeight: 50,
       barSpacing: 4,
       margin: {top: 5, right: 30, bottom: 5, left: 5},
       steps: ['step0', 'step1', 'step2', 'step3', 'step4']
@@ -25,10 +25,10 @@ class ScrollerVis {
     let vis = this;
 
     // Identify hikes with the longest distance
-    const dataTop15 = [...vis.data].sort((a,b) => b.distance - a.distance).slice(0,15);
-    const namesTop15 = dataTop15.map(d => d.trail);
+    const dataTop5 = [...vis.data].sort((a,b) => b.time - a.time).slice(0,5);
+    const namesTop5 = dataTop5.map(d => d.name);
     vis.data.forEach(d => {
-      d.rank = namesTop15.indexOf(d.trail);
+      d.rank = namesTop5.indexOf(d.name);
     });
 
     vis.dataLongestHike = [...vis.data].sort((a,b) => b.time - a.time)[0];
@@ -39,7 +39,7 @@ class ScrollerVis {
 
     vis.xScale = d3.scaleLinear()
         .range([0, vis.config.width-vis.config.yAxisWidth])
-        .domain([0, d3.max(dataTop15, d => d.distance)]);
+        .domain([0, d3.max(dataTop5, d => d.time)]);
 
     // Define size of SVG drawing area
     vis.svg = d3.select(vis.config.parentElement).append('svg')
@@ -53,7 +53,7 @@ class ScrollerVis {
 
     // Initialize scales
     vis.colorScale = d3.scaleOrdinal()
-        .range(['#78ab9c', '#e2cc00', '#c5eadf'])
+        .range(['#6ef592', '#e24500', '#b3f5cd'])
         .domain(['default','highlighted', 'inactive']);
 
     // Calculate number of columns and rows for the grid layout
@@ -62,7 +62,7 @@ class ScrollerVis {
 
     // Bind data to rectangles but don't specify any attributes yet
     vis.rect = vis.chart.selectAll('rect')
-        .data(data, d => d.name).join('rect');
+        .data(vis.data, d => d.name).join('rect');
 
     // Call first step
     vis.step0();
@@ -103,7 +103,7 @@ class ScrollerVis {
     // getting changed in step4() and we want to allow users to scroll up and down.
     vis.rect.transition()
         .attr('opacity', 1)
-        .attr('fill', d => d.trail==vis.dataLongestHike.trail ? vis.colorScale('highlighted') : vis.colorScale('inactive'))
+        .attr('fill', d => d.name==vis.dataLongestHike.name ? vis.colorScale('highlighted') : vis.colorScale('inactive'))
         .attr('width', d => vis.config.cellWidth)
         .attr('height', d => vis.config.cellHeight)
         .attr('x', (d, i) => i % vis.config.columns * (vis.config.cellWidth + vis.config.cellSpacing))
@@ -124,7 +124,7 @@ class ScrollerVis {
         .attr('x', vis.config.yAxisWidth)
         .attr('y', d => d.rank * (vis.config.barHeight + vis.config.barSpacing))
         .attr('height', d => vis.config.barHeight)
-        .attr('width', d => vis.xScale(d.distance));
+        .attr('width', d => vis.xScale(d.time));
 
     vis.textG = vis.chart.selectAll('g')
         .data(vis.data.filter(d => d.rank >= 0))
@@ -138,14 +138,14 @@ class ScrollerVis {
         .attr('dy', '0.35em')
         .attr('x', -3)
         .attr('y', vis.config.barHeight/2)
-        .text(d => d.trail);
+        .text(d => d.name);
 
     vis.textG.append('text')
         .attr('class', 'chart-label chart-label-val')
         .attr('dy', '0.35em')
         .attr('x', 5)
         .attr('y', vis.config.barHeight/2)
-        .text(d => d.distance);
+        .text(d => d.time);
 
     vis.textG.transition().duration(800)
         .attr('opacity', 1);

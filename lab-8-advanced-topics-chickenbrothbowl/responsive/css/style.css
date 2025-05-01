@@ -108,3 +108,6 @@ body {
     padding-left: 20px;
   }
   
+  #scatterplot {
+    max-width: 1000px;
+  }

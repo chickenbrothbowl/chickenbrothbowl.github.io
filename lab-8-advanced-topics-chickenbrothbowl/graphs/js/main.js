@@ -1,7 +1,7 @@
 /**
  * Load data from JSON file asynchronously and render force directed graph
  */
-d3.json('data/TODO').then(data => {
-    const forceDirectedGraph = new ForceDirectedGraph({ parentElement: TODO}, data);
+d3.json('data/miserables.json').then(data => {
+    const forceDirectedGraph = new ForceDirectedGraph({ parentElement: '#force-directed-graph'}, data);
   })
   .catch(error => console.error(error));

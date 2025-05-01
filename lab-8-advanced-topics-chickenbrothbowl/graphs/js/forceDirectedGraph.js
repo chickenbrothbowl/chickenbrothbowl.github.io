@@ -40,7 +40,10 @@ class ForceDirectedGraph {
           .attr('transform', `translate(${vis.config.margin.left},${vis.config.margin.top})`);
   
       // Initialize force simulation
-
+    vis.simulation = d3.forceSimulation()
+      .force('link', d3.forceLink().id(d => d.id))
+      .force('charge', d3.forceManyBody())
+      .force('center', d3.forceCenter(vis.config.width / 2, vis.config.height / 2));
   
       vis.updateVis();
     }
@@ -52,11 +55,16 @@ class ForceDirectedGraph {
       let vis = this;
   
       // Add node-link data to simulation
-
+      vis.simulation.nodes(vis.data.nodes);
+      vis.simulation.force('link').links(vis.data.links);
+    // Hint: this data is stored in our vis object.
   
       vis.colorScale.domain(vis.data.nodes.map(d => d.group));
       
       vis.renderVis();
+
+      console.log('Nodes:', vis.data.nodes);
+      console.log('Links:', vis.data.links);
     }
   
     /**
@@ -66,12 +74,29 @@ class ForceDirectedGraph {
       let vis = this;
   
       // Add links
-
+      const links = vis.chart.selectAll('line')
+        .data(vis.data.links, d => [d.source, d.target])
+        .join('line');
   
       // Add nodes
-      
+      const nodes = vis.chart.selectAll('circle')
+        .data(vis.data.nodes, d => d.id)
+        .join('circle')
+      	.attr('r', 5)
+      	.attr('fill', d => vis.colorScale(d.id));      
   
-      // Update positions
+      // Update positions in renderVis()
+      vis.simulation.on('tick', () => {
+        links
+          .attr('x1', d => d.source.x)
+          .attr('y1', d => d.source.y)
+          .attr('x2', d => d.target.x)
+          .attr('y2', d => d.target.y);
+
+        nodes
+          .attr('cx', d => d.x)
+          .attr('cy', d => d.y);
+      });
 
 
     }

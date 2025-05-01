@@ -79,10 +79,17 @@ class Scatterplot {
       let vis = this;
   
       // Update all dimensions based on the current screen size
+      vis.config.containerWidth = document.getElementById(vis.config.parentElement.substring(1)).clientWidth;
+      console.log("The current container width is:", vis.config.containerWidth);
 
       // Calculate inner chart size. Margin specifies the space around the actual chart.
-     
+      vis.config.width = vis.config.containerWidth - vis.config.margin.left - vis.config.margin.right;
+      vis.config.height = vis.config.containerHeight - vis.config.margin.top - vis.config.margin.bottom;
+
       // Update SVG Size
+      vis.svg
+        .attr('width', vis.config.containerWidth)
+        .attr('height', vis.config.containerHeight);
   
       vis.xAxisG
           .attr('transform', `translate(0,${vis.config.height})`);
@@ -112,8 +119,19 @@ class Scatterplot {
           .domain([0, d3.max(vis.data, vis.yValue)]);
   
       vis.renderVis();
+
+      let pageLoad = true;
+      d3.select(window).on('resize', () => {
+      if (pageLoad) {
+    		pageLoad = false;
+  	  } else {
+    		scatterplot.updateVis()
+  	  }
+});
+
     }
   
+    
     /**
      * Bind data to visual elements.
      */

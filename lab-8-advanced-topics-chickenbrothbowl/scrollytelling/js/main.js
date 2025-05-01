@@ -2,20 +2,20 @@
  * Load data from CSV file asynchronously and render scatter plot
  */
 let data, scrollerVis;
-d3.csv('data/vancouver_trails.csv').then(_data => {
+d3.csv('data/assignments.csv').then(_data => {
   data = _data;
   data.forEach(d => {
-    d.distance = +d.distance;
+    d.time = +d.time;
   });
 
   // Update text on the web page based on the loaded dataset
-  d3.select('#hikes-count').text(data.length);
-  d3.select('#easy-hikes-count').text(data.filter(d => d.difficulty == 'Easy').length);
-  d3.select('#difficult-hikes-count').text(data.filter(d => d.difficulty == 'Difficult').length);
+  d3.select('#assignments-count').text(data.length);
+  d3.select('#easy-assignments-count').text(data.filter(d => d.difficulty == 'Easy').length);
+  d3.select('#difficult-assignments-count').text(data.filter(d => d.difficulty == 'Difficult').length);
 
-  const longestHike = [...data].sort((a,b) => b.time - a.time)[0];
-  d3.select('#max-duration').text(longestHike.time);
-  d3.select('#max-duration-trail').text(longestHike.trail);
+  const longestAssignment = [...data].sort((a,b) => b.time - a.time)[0];
+  d3.select('#max-time').text(longestAssignment.time);
+  d3.select('#max-time-assignment').text(longestAssignment.name);
 
   // Initialize visualization
   scrollerVis = new ScrollerVis({ parentElement: '#vis'}, data);
