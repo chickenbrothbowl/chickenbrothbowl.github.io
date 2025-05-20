@@ -22,6 +22,7 @@ def run_bot():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# THIS MUST BE INCLUDED
 if __name__ == '__main__':
     app.run(debug=True)
+
+#ALL CODE IN APP.PY IS AI-GENERATED
