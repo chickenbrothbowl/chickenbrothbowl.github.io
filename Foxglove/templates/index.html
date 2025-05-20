@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Foxglove Launcher</title>
+</head>
+<body>
+  <h1>Run Foxglove</h1>
+  <!-- Begin AI generated code -->
+  <form action="/run" method="POST">
+    <label for="topic">Topic:</label>
+    <input type="text" id="topic" name="topic" required><br><br>
+
+    <label for="mode">Mode:</label>
+    <select id="mode" name="mode">
+      <option value="S">Scroll</option>
+      <option value="L">Like</option>
+    </select><br><br>
+
+    <label for="interactions">Number of Interactions:</label>
+    <input type="number" id="interactions" name="interactions" min="1" required><br><br>
+
+    <button type="submit">Start Bot</button>
+  </form>
+  <!-- End AI generated code -->
+</body>
+</html>
